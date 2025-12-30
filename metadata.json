@@ -1,0 +1,10 @@
+
+{
+  "name": "ZomiGPT",
+  "description": "ZomiGPT powered by AI. The premier intelligence platform for the Zomi community featuring advanced linguistic tools, image generation, and real-time reasoning powered by Gemini.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
