@@ -28,6 +28,14 @@ import {
 const App: React.FC = () => {
   const buildApiKey = process.env.API_KEY;
   const hasBuildApiKey = Boolean(buildApiKey);
+  
+  // Log API key status on app start
+  if (typeof window !== 'undefined') {
+    console.log('🚀 ZomiGPT App Starting...');
+    console.log('  Build API Key:', buildApiKey ? `✓ Loaded (${buildApiKey.substring(0, 10)}...)` : '✗ Missing');
+    console.log('  Has Build Key:', hasBuildApiKey ? 'Yes' : 'No');
+  }
+  
   const [currentView, setCurrentView] = useState<ViewType>(ViewType.CHAT); // Default to Chat
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showApiKeyPrompt, setShowApiKeyPrompt] = useState(false);
