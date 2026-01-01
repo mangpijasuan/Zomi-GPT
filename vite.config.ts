@@ -8,8 +8,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, cwd(), '');
   
   return {
-    // Set base to relative for GitHub Pages compatibility
-    base: './',
+    // Set base to repository name for GitHub Pages compatibility
+    base: '/Zomi-GPT/',
     plugins: [react()],
     define: {
       // Inject API_KEY from environment variables

@@ -71,7 +71,7 @@ export const searchGrounding = async (query: string) => {
       config: { tools: [{ googleSearch: {} }] }
     });
     return {
-      text: response.text,
+      text: response.text || '',
       sources: response.candidates?.[0]?.groundingMetadata?.groundingChunks?.map((chunk: any) => ({
         title: chunk.web?.title || 'Source',
         uri: chunk.web?.uri || '#'
