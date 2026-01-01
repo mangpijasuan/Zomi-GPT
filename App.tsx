@@ -26,6 +26,8 @@ import {
 } from 'lucide-react';
 
 const App: React.FC = () => {
+  const buildApiKey = process.env.API_KEY;
+  const hasBuildApiKey = Boolean(buildApiKey);
   const [currentView, setCurrentView] = useState<ViewType>(ViewType.CHAT); // Default to Chat
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showApiKeyPrompt, setShowApiKeyPrompt] = useState(false);
@@ -51,7 +53,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // Check if API key is available
-    if (!getApiKey()) {
+    if (!hasBuildApiKey && !getApiKey()) {
       setShowApiKeyPrompt(true);
     }
   }, []);
@@ -124,7 +126,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-[#212121] text-white overflow-hidden">
-      {showApiKeyPrompt && <ApiKeyPrompt onSubmit={handleApiKeySubmit} />}
+      {showApiKeyPrompt && !hasBuildApiKey && <ApiKeyPrompt onSubmit={handleApiKeySubmit} />}
       <Sidebar 
         currentView={currentView} 
         onViewChange={setCurrentView} 
