@@ -1,7 +1,34 @@
 
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 
-const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
+let userApiKey: string | null = null;
+
+export const setApiKey = (key: string) => {
+  userApiKey = key;
+  localStorage.setItem('zomigpt_api_key', key);
+};
+
+export const getApiKey = (): string | undefined => {
+  if (userApiKey) return userApiKey;
+  
+  // Try to get from localStorage
+  const stored = localStorage.getItem('zomigpt_api_key');
+  if (stored) {
+    userApiKey = stored;
+    return stored;
+  }
+  
+  // Try to get from environment (build-time)
+  return process.env.API_KEY;
+};
+
+const getAI = () => {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('API_KEY_MISSING');
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 const withRetry = async <T>(fn: () => Promise<T>, retries = 3, delay = 1000): Promise<T> => {
   try {
@@ -173,5 +200,6 @@ export const generateVideo = async (prompt: string, onStatus: (status: string) =
     onStatus('Generating...');
   }
   const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
-  return `${downloadLink}&key=${process.env.API_KEY}`;
+  const apiKey = getApiKey();
+  return `${downloadLink}&key=${apiKey}`;
 };

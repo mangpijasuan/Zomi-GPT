@@ -13,8 +13,10 @@ import UpgradeView from './components/UpgradeView';
 import AuthView from './components/AuthView';
 import ProfileView from './components/ProfileView';
 import ErrorBoundary from './components/ErrorBoundary';
+import ApiKeyPrompt from './components/ApiKeyPrompt';
 import { ViewType, FREE_DAILY_LIMIT, UserProfile, AppLanguage } from './types';
 import { translations } from './services/translations';
+import { getApiKey, setApiKey } from './services/gemini';
 import { 
   Crown, 
   X, 
@@ -26,6 +28,7 @@ import {
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<ViewType>(ViewType.CHAT); // Default to Chat
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showApiKeyPrompt, setShowApiKeyPrompt] = useState(false);
   const [user, setUser] = useState<UserProfile>(() => {
     const saved = localStorage.getItem('zomigpt_user');
     const today = new Date().toDateString();
@@ -45,6 +48,18 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('zomigpt_user', JSON.stringify(user));
   }, [user]);
+
+  useEffect(() => {
+    // Check if API key is available
+    if (!getApiKey()) {
+      setShowApiKeyPrompt(true);
+    }
+  }, []);
+
+  const handleApiKeySubmit = (apiKey: string) => {
+    setApiKey(apiKey);
+    setShowApiKeyPrompt(false);
+  };
 
   const handleAuth = (email: string, username: string) => {
     setUser(prev => ({ ...prev, isAuthenticated: true, email, username }));
@@ -109,6 +124,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-[#212121] text-white overflow-hidden">
+      {showApiKeyPrompt && <ApiKeyPrompt onSubmit={handleApiKeySubmit} />}
       <Sidebar 
         currentView={currentView} 
         onViewChange={setCurrentView} 
