@@ -61,7 +61,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // Check if API key is available
-    if (!hasBuildApiKey && !getApiKey()) {
+    // Always show prompt if no build key AND no saved key
+    const savedKey = localStorage.getItem('zomigpt_api_key');
+    if (!hasBuildApiKey && !savedKey) {
       setShowApiKeyPrompt(true);
     }
 
@@ -75,7 +77,7 @@ const App: React.FC = () => {
       // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [hasBuildApiKey]);
 
   const verifySubscription = async (sessionId: string) => {
     try {
