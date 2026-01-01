@@ -49,7 +49,7 @@ export const chatWithGemini = async (message: string, imageBase64?: string, isPr
     if (imageBase64) {
       contents.push({ inlineData: { mimeType: 'image/png', data: imageBase64 } });
     }
-    const modelName = isPro ? 'gemini-3-pro-preview' : 'gemini-3-flash-preview';
+    const modelName = isPro ? 'gemini-2.0-flash-exp' : 'gemini-2.0-flash-exp';
     const response = await ai.models.generateContent({
       model: modelName,
       contents: { parts: contents },
@@ -68,7 +68,7 @@ export const dictionaryLookup = async (word: string) => {
     Structure: Headword, Part of Speech, Definition (English & Zomi), Example Sentences, and Cultural Notes.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.0-flash-exp',
       contents: word,
       config: { systemInstruction: systemPrompt }
     });
@@ -81,7 +81,7 @@ export const translateText = async (text: string, from: string, to: string) => {
     const ai = getAI();
     const systemPrompt = `Expert translator for ZomiGPT. Translate ${from} to ${to}. Provide only the result.`;
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.0-flash-exp',
       contents: text,
       config: { systemInstruction: systemPrompt }
     });
@@ -93,7 +93,7 @@ export const searchGrounding = async (query: string) => {
   return withRetry(async () => {
     const ai = getAI();
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.0-flash-exp',
       contents: query,
       config: { tools: [{ googleSearch: {} }] }
     });
@@ -145,9 +145,9 @@ export const generateImage = async (prompt: string, isPro = false) => {
       if (!hasKey) await (window as any).aistudio?.openSelectKey();
     }
     const ai = getAI();
-    const modelName = isPro ? 'gemini-3-pro-image-preview' : 'gemini-2.5-flash-image';
+    const modelName = 'gemini-2.0-flash-exp';
     const imageConfig: any = { aspectRatio: "1:1" };
-    if (modelName === 'gemini-3-pro-image-preview') {
+    if (isPro) {
       imageConfig.imageSize = "2K";
     }
 

@@ -56,7 +56,38 @@ const App: React.FC = () => {
     if (!hasBuildApiKey && !getApiKey()) {
       setShowApiKeyPrompt(true);
     }
+
+    // Check for successful payment
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const success = urlParams.get('success');
+
+    if (success === 'true' && sessionId) {
+      verifySubscription(sessionId);
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
+
+  const verifySubscription = async (sessionId: string) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${apiUrl}/api/verify-subscription?session_id=${sessionId}`);
+      const data = await response.json();
+
+      if (data.isPro) {
+        setUser(prev => ({
+          ...prev,
+          isPro: true,
+          email: data.email,
+        }));
+        localStorage.setItem('zomigpt_customer_id', data.customerId);
+        localStorage.setItem('zomigpt_email', data.email);
+      }
+    } catch (error) {
+      console.error('Verification failed:', error);
+    }
+  };
 
   const handleApiKeySubmit = (apiKey: string) => {
     setApiKey(apiKey);

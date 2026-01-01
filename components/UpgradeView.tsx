@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Check, Crown, Zap, Shield, Sparkles, Star } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Crown, Zap, Shield, Sparkles, Star, Loader2 } from 'lucide-react';
 import { AppLanguage } from '../types';
 
 /**
@@ -13,6 +13,33 @@ interface UpgradeViewProps {
 }
 
 const UpgradeView: React.FC<UpgradeViewProps> = ({ isPro, onUpgrade, language }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleUpgrade = async () => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${apiUrl}/api/create-checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: localStorage.getItem('zomigpt_email') || undefined,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to create checkout session');
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (err: any) {
+      console.error('Upgrade error:', err);
+      setError(err.message || 'Failed to start checkout. Please try again.');
+      setLoading(false);
+    }
+  };
   const tiers = [
     {
       name: 'Starter',
@@ -103,18 +130,23 @@ const UpgradeView: React.FC<UpgradeViewProps> = ({ isPro, onUpgrade, language })
             </div>
 
             <button
-              onClick={() => tier.isPro && !isPro && onUpgrade()}
-              disabled={isPro && tier.isPro || !tier.isPro}
+              onClick={() => tier.isPro && !isPro && handleUpgrade()}
+              disabled={isPro && tier.isPro || !tier.isPro || loading}
               className={`w-full py-4 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
                 tier.highlight 
-                ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-xl shadow-purple-900/20' 
+                ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-xl shadow-purple-900/20 disabled:opacity-50' 
                 : 'bg-[#222] text-gray-500 cursor-not-allowed'
               }`}
             >
-              {isPro && tier.isPro ? (
+              {loading ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Processing...
+                </>
+              ) : isPro && tier.isPro ? (
                 <>
                   <Shield size={18} />
-                  Manage Subscription
+                  Active Subscription
                 </>
               ) : (
                 <>
@@ -126,6 +158,12 @@ const UpgradeView: React.FC<UpgradeViewProps> = ({ isPro, onUpgrade, language })
           </div>
         ))}
       </div>
+
+      {error && (
+        <div className="max-w-4xl mx-auto mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-center">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 opacity-40 grayscale group-hover:grayscale-0 transition-all text-center">
         <div className="flex flex-col items-center gap-3">
