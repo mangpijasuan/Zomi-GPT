@@ -25,8 +25,12 @@ export const getApiKey = (): string | undefined => {
 const getAI = () => {
   const apiKey = getApiKey();
   if (!apiKey) {
+    console.error('❌ API Key is missing!');
+    console.error('  - Build-time key:', process.env.API_KEY ? '✓ Present' : '✗ Missing');
+    console.error('  - localStorage:', localStorage.getItem('zomigpt_api_key') ? '✓ Present' : '✗ Missing');
     throw new Error('API_KEY_MISSING');
   }
+  console.log('✓ API Key loaded successfully');
   return new GoogleGenAI({ apiKey });
 };
 
