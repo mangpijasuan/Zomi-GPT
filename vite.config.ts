@@ -7,12 +7,14 @@ export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
   const env = loadEnv(mode, cwd(), '');
   
-  // Prefer VITE_API_KEY (from GitHub secret), fallback to API_KEY
-  const apiKey = env.VITE_API_KEY || env.API_KEY;
+  // Get API key from environment variables (GitHub Actions secrets) or env files
+  // process.env has priority during GitHub Actions build
+  const apiKey = process.env.VITE_API_KEY || env.VITE_API_KEY || env.API_KEY || process.env.API_KEY;
   
   console.log('🔧 Vite Config - API Key Status:');
-  console.log('  VITE_API_KEY:', env.VITE_API_KEY ? '✓ Set' : '✗ Not set');
-  console.log('  API_KEY:', env.API_KEY ? '✓ Set' : '✗ Not set');
+  console.log('  process.env.VITE_API_KEY:', process.env.VITE_API_KEY ? '✓ Set' : '✗ Not set');
+  console.log('  env.VITE_API_KEY:', env.VITE_API_KEY ? '✓ Set' : '✗ Not set');
+  console.log('  env.API_KEY:', env.API_KEY ? '✓ Set' : '✗ Not set');
   console.log('  Final API Key:', apiKey ? '✓ Ready' : '✗ Missing');
   
   return {
