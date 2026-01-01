@@ -7,12 +7,11 @@ import { chatWithGemini } from '../services/gemini';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Prism from 'prismjs';
-
-import 'https://esm.sh/prismjs/components/prism-javascript';
-import 'https://esm.sh/prismjs/components/prism-typescript';
-import 'https://esm.sh/prismjs/components/prism-css';
-import 'https://esm.sh/prismjs/components/prism-python';
-import 'https://esm.sh/prismjs/components/prism-markdown';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-markdown';
 
 interface ChatViewProps {
   onUseCredit: () => boolean;
