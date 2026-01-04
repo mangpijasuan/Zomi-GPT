@@ -5,10 +5,5 @@
       "src": "api/**/*.js",
       "use": "@vercel/node"
     }
-  ],
-  "env": {
-    "STRIPE_SECRET_KEY": "@stripe-secret-key",
-    "STRIPE_PRICE_ID": "@stripe-price-id",
-    "APP_URL": "@app-url"
-  }
+  ]
 }
