@@ -18,8 +18,8 @@ export default defineConfig(({ mode }) => {
   console.log('  Final API Key:', apiKey ? '✓ Ready' : '✗ Missing');
   
   return {
-    // Set base to repository name for GitHub Pages compatibility
-    base: '/Zomi-GPT/',
+    // Set base to root for custom domain (zomigpt.com)
+    base: '/',
     plugins: [react()],
     define: {
       // Inject API_KEY from environment variables
